@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Donations - NayePankh{% endblock %}
+{% block content %}
+<div class="page-header mb-4">
+    <h2><i class="bi bi-heart me-2 text-danger"></i>Donation Management</h2>
+    <p class="text-muted">Total raised: <strong class="text-success">₹{{ "{:,.0f}".format(total) }}</strong></p>
+</div>
+
+<!-- Record Donation Form -->
+{% if session['role'] == 'admin' %}
+<div class="np-card p-4 mb-4">
+    <h5 class="mb-3"><i class="bi bi-plus-circle text-success me-2"></i>Record New Donation</h5>
+    <form method="POST" class="row g-3">
+        <div class="col-md-3">
+            <input type="text" name="donor_name" class="form-control" placeholder="Donor Name *" required>
+        </div>
+        <div class="col-md-3">
+            <input type="email" name="email" class="form-control" placeholder="Email">
+        </div>
+        <div class="col-md-2">
+            <div class="input-group np-input-group">
+                <span class="input-group-text">₹</span>
+                <input type="number" name="amount" class="form-control" placeholder="Amount *" required min="1" step="0.01">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <select name="purpose" class="form-select">
+                <option value="">Purpose</option>
+                {% for p in ['Education','Healthcare','Environment','Food','General'] %}
+                <option value="{{ p }}">{{ p }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-1">
+            <select name="payment_mode" class="form-select">
+                <option value="">Mode</option>
+                {% for m in ['UPI','Cash','Cheque','Bank Transfer','Card'] %}
+                <option value="{{ m }}">{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn np-btn-primary w-100"><i class="bi bi-check2"></i></button>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+<!-- Donations Table -->
+{% if donations %}
+<div class="np-card p-0 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover np-table mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Donor</th>
+                    <th>Amount</th>
+                    <th>Purpose</th>
+                    <th>Mode</th>
+                    <th>Date</th>
+                    {% if session['role'] == 'admin' %}<th>Action</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for d in donations %}
+            <tr>
+                <td class="text-muted">{{ loop.index }}</td>
+                <td>
+                    <strong>{{ d['donor_name'] }}</strong>
+                    {% if d['email'] %}<br><small class="text-muted">{{ d['email'] }}</small>{% endif %}
+                </td>
+                <td><strong class="text-success">₹{{ "{:,.0f}".format(d['amount']) }}</strong></td>
+                <td>{{ d['purpose'] or '—' }}</td>
+                <td>
+                    {% if d['payment_mode'] %}
+                    <span class="badge bg-info bg-opacity-20 text-info">{{ d['payment_mode'] }}</span>
+                    {% else %}—{% endif %}
+                </td>
+                <td class="text-muted small">{{ d['donated_at'][:10] }}</td>
+                {% if session['role'] == 'admin' %}
+                <td>
+                    <form method="POST" action="{{ url_for('delete_donation', did=d['id']) }}" onsubmit="return confirm('Delete this record?')">
+                        <button class="btn btn-outline-danger btn-xs"><i class="bi bi-trash"></i></button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-heart fs-1 text-muted d-block mb-3"></i>
+    <h5 class="text-muted">No donations recorded yet</h5>
+</div>
+{% endif %}
+{% endblock %}

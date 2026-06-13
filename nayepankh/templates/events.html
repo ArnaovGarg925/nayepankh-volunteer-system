@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Events - NayePankh{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2><i class="bi bi-calendar-event me-2 text-success"></i>Events</h2>
+        <p class="text-muted mb-0">{{ events|length }} events available</p>
+    </div>
+    {% if session['role'] == 'admin' %}
+    <a href="{{ url_for('create_event') }}" class="btn np-btn-primary">
+        <i class="bi bi-calendar-plus me-2"></i>Create Event
+    </a>
+    {% endif %}
+</div>
+
+<!-- Search -->
+<div class="np-card p-3 mb-4">
+    <form method="GET" class="row g-2">
+        <div class="col-md-9">
+            <div class="input-group np-input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" class="form-control" placeholder="Search events by title or location..." value="{{ q }}">
+            </div>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn np-btn-primary flex-fill">Search</button>
+            <a href="{{ url_for('events') }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </form>
+</div>
+
+{% if events %}
+<div class="row g-4">
+    {% for e in events %}
+    <div class="col-md-6 col-xl-4">
+        <div class="event-card p-4 h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="event-date-badge">{{ e['date'] }}</div>
+                <span class="badge {% if e['status'] == 'upcoming' %}bg-success bg-opacity-20 text-success{% else %}bg-secondary bg-opacity-20 text-secondary{% endif %}">
+                    {{ e['status'].title() }}
+                </span>
+            </div>
+            <h5 class="mb-2">{{ e['title'] }}</h5>
+            <p class="text-muted small flex-fill">{{ e['description'][:120] }}{% if e['description'] and e['description']|length > 120 %}...{% endif %}</p>
+            <div class="d-flex gap-3 text-muted small mb-3">
+                <span><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ e['location'] or 'TBD' }}</span>
+                <span><i class="bi bi-people-fill text-info me-1"></i>{{ e['max_volunteers'] }} spots</span>
+            </div>
+            <div class="d-flex gap-2">
+                {% if e['id'] in registered %}
+                <button class="btn btn-success btn-sm flex-fill" disabled><i class="bi bi-check2 me-1"></i>Registered</button>
+                {% else %}
+                <form method="POST" action="{{ url_for('register_event', eid=e['id']) }}" class="flex-fill">
+                    <button type="submit" class="btn np-btn-primary btn-sm w-100"><i class="bi bi-person-plus me-1"></i>Register</button>
+                </form>
+                {% endif %}
+                {% if session['role'] == 'admin' %}
+                <form method="POST" action="{{ url_for('delete_event', eid=e['id']) }}" onsubmit="return confirm('Delete this event?')">
+                    <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-calendar-x fs-1 text-muted d-block mb-3"></i>
+    <h5 class="text-muted">No events found</h5>
+    {% if session['role'] == 'admin' %}
+    <a href="{{ url_for('create_event') }}" class="btn np-btn-primary mt-2">Create First Event</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

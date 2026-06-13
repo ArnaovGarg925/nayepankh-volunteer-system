@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Edit Volunteer - NayePankh{% endblock %}
+{% block content %}
+<div class="auth-wrapper d-flex align-items-center justify-content-center py-5">
+    <div class="auth-card p-5" style="max-width:520px;width:100%">
+        <h4 class="mb-4"><i class="bi bi-pencil-square text-success me-2"></i>Edit Volunteer</h4>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control" value="{{ user['name'] }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" value="{{ user['phone'] or '' }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control" value="{{ user['city'] or '' }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Skills</label>
+                <input type="text" name="skills" class="form-control" value="{{ user['skills'] or '' }}">
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    {% for s in ['active','pending','rejected'] %}
+                    <option value="{{ s }}" {% if user['status'] == s %}selected{% endif %}>{{ s.title() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn np-btn-primary flex-fill">Save Changes</button>
+                <a href="{{ url_for('volunteers') }}" class="btn btn-outline-secondary flex-fill">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

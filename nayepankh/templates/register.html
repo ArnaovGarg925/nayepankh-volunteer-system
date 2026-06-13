@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Register - NayePankh{% endblock %}
+{% block content %}
+<div class="auth-wrapper d-flex align-items-center justify-content-center py-5">
+    <div class="auth-card p-5" style="max-width:560px;width:100%">
+        <div class="text-center mb-4">
+            <div class="auth-icon mx-auto mb-3"><i class="bi bi-person-plus fs-2 text-success"></i></div>
+            <h2 class="fw-bold">Join NayePankh</h2>
+            <p class="text-muted">Create your volunteer account today</p>
+        </div>
+        <form method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Full Name *</label>
+                    <div class="input-group np-input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" name="name" class="form-control" placeholder="Your full name" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email *</label>
+                    <div class="input-group np-input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Password *</label>
+                    <div class="input-group np-input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Phone</label>
+                    <div class="input-group np-input-group">
+                        <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                        <input type="text" name="phone" class="form-control" placeholder="+91 9876543210">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">City</label>
+                    <div class="input-group np-input-group">
+                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                        <input type="text" name="city" class="form-control" placeholder="Your city">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Register As</label>
+                    <div class="input-group np-input-group">
+                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                        <select name="role" class="form-select">
+                            <option value="volunteer">Volunteer</option>
+                            <option value="intern">Intern</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Skills / Interests</label>
+                    <div class="input-group np-input-group">
+                        <span class="input-group-text"><i class="bi bi-stars"></i></span>
+                        <input type="text" name="skills" class="form-control" placeholder="e.g. Teaching, Medical, Coding">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn np-btn-primary w-100 btn-lg mt-4">
+                <i class="bi bi-person-check me-2"></i>Create Account
+            </button>
+        </form>
+        <div class="text-center mt-3">
+            <span class="text-muted">Already have an account? </span>
+            <a href="{{ url_for('login') }}" class="text-success fw-semibold">Sign in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

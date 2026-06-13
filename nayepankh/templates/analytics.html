@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Analytics - NayePankh{% endblock %}
+{% block content %}
+<div class="page-header mb-4">
+    <h2><i class="bi bi-bar-chart me-2 text-info"></i>Analytics Dashboard</h2>
+    <p class="text-muted">Visual insights into NayePankh's impact</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="np-card p-4">
+            <h6 class="mb-3 text-muted"><i class="bi bi-pie-chart me-2"></i>Volunteer Status Distribution</h6>
+            {% if charts.vol_status %}
+            <img src="data:image/png;base64,{{ charts.vol_status }}" class="img-fluid rounded" alt="Volunteer Status Chart">
+            {% else %}
+            <p class="text-muted text-center py-4">No data available</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="np-card p-4">
+            <h6 class="mb-3 text-muted"><i class="bi bi-bar-chart me-2"></i>Monthly Donations (₹)</h6>
+            {% if charts.donations %}
+            <img src="data:image/png;base64,{{ charts.donations }}" class="img-fluid rounded" alt="Donations Chart">
+            {% else %}
+            <p class="text-muted text-center py-4">No data available</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="np-card p-4">
+            <h6 class="mb-3 text-muted"><i class="bi bi-bar-chart-horizontal me-2"></i>Internship Domains</h6>
+            {% if charts.internships %}
+            <img src="data:image/png;base64,{{ charts.internships }}" class="img-fluid rounded" alt="Internships Chart">
+            {% else %}
+            <p class="text-muted text-center py-4">No data available</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="np-card p-4 d-flex flex-column justify-content-center align-items-center" style="min-height:250px">
+            <i class="bi bi-graph-up-arrow fs-1 text-success mb-3"></i>
+            <h5>Impact Summary</h5>
+            <p class="text-muted text-center">Charts update automatically as data is added. Add volunteers, events, and donations to see trends.</p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success btn-sm mt-2">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Internships - NayePankh{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2><i class="bi bi-briefcase me-2 text-warning"></i>Internship Applications</h2>
+        <p class="text-muted mb-0">{{ apps|length }} application(s)</p>
+    </div>
+    {% if session['role'] != 'admin' %}
+    <a href="{{ url_for('apply_internship') }}" class="btn np-btn-primary">
+        <i class="bi bi-send me-2"></i>Apply for Internship
+    </a>
+    {% endif %}
+</div>
+
+{% if apps %}
+<div class="np-card p-0 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover np-table mb-0">
+            <thead>
+                <tr>
+                    {% if session['role'] == 'admin' %}<th>Applicant</th>{% endif %}
+                    <th>Domain</th>
+                    <th>Duration</th>
+                    <th>Motivation</th>
+                    <th>Applied</th>
+                    <th>Status</th>
+                    {% if session['role'] == 'admin' %}<th>Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for a in apps %}
+            <tr>
+                {% if session['role'] == 'admin' %}
+                <td>
+                    <strong>{{ a['name'] }}</strong><br>
+                    <small class="text-muted">{{ a['email'] }}</small>
+                </td>
+                {% endif %}
+                <td><span class="badge bg-warning bg-opacity-20 text-warning">{{ a['domain'] }}</span></td>
+                <td>{{ a['duration'] }}</td>
+                <td class="text-muted" style="max-width:200px">
+                    <span title="{{ a['motivation'] }}">{{ a['motivation'][:60] }}{% if a['motivation']|length > 60 %}...{% endif %}</span>
+                </td>
+                <td class="text-muted small">{{ a['applied_at'][:10] }}</td>
+                <td><span class="badge status-badge-{{ a['status'] }}">{{ a['status'].title() }}</span></td>
+                {% if session['role'] == 'admin' %}
+                <td>
+                    {% if a['status'] == 'pending' %}
+                    <form method="POST" action="{{ url_for('update_internship', aid=a['id'], action='approve') }}" class="d-inline">
+                        <button class="btn btn-success btn-xs me-1"><i class="bi bi-check2"></i> Approve</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('update_internship', aid=a['id'], action='reject') }}" class="d-inline">
+                        <button class="btn btn-danger btn-xs"><i class="bi bi-x"></i> Reject</button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted small">—</span>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-briefcase fs-1 text-muted d-block mb-3"></i>
+    <h5 class="text-muted">No applications yet</h5>
+    {% if session['role'] != 'admin' %}
+    <a href="{{ url_for('apply_internship') }}" class="btn np-btn-primary mt-2">Apply Now</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

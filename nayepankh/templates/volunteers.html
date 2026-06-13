@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Volunteers - NayePankh{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2><i class="bi bi-people me-2 text-success"></i>Volunteer Management</h2>
+        <p class="text-muted mb-0">{{ volunteers|length }} volunteers found</p>
+    </div>
+</div>
+
+<!-- Search & Filter -->
+<div class="np-card p-3 mb-4">
+    <form method="GET" class="row g-2 align-items-end">
+        <div class="col-md-6">
+            <div class="input-group np-input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" class="form-control" placeholder="Search by name, email, city..." value="{{ q }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                {% for s in ['active','pending','rejected'] %}
+                <option value="{{ s }}" {% if status_filter == s %}selected{% endif %}>{{ s.title() }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn np-btn-primary flex-fill">Search</button>
+            <a href="{{ url_for('volunteers') }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </form>
+</div>
+
+{% if volunteers %}
+<div class="row g-4">
+    {% for v in volunteers %}
+    <div class="col-md-6 col-xl-4">
+        <div class="volunteer-card p-4">
+            <div class="d-flex align-items-start gap-3">
+                <div class="user-avatar-md">{{ v['name'][0].upper() }}</div>
+                <div class="flex-fill">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">{{ v['name'] }}</h6>
+                            <small class="text-muted">{{ v['email'] }}</small>
+                        </div>
+                        <span class="badge status-badge-{{ v['status'] }}">{{ v['status'] }}</span>
+                    </div>
+                    <div class="mt-2 d-flex flex-wrap gap-1">
+                        <span class="badge role-badge-{{ v['role'] }}">{{ v['role'].title() }}</span>
+                        {% if v['city'] %}<span class="badge bg-secondary bg-opacity-20 text-secondary"><i class="bi bi-geo-alt me-1"></i>{{ v['city'] }}</span>{% endif %}
+                    </div>
+                    {% if v['skills'] %}
+                    <div class="mt-2"><small class="text-muted"><i class="bi bi-stars me-1 text-warning"></i>{{ v['skills'] }}</small></div>
+                    {% endif %}
+                    <div class="mt-2 text-muted small"><i class="bi bi-phone me-1"></i>{{ v['phone'] or 'N/A' }}</div>
+                </div>
+            </div>
+            {% if session['role'] == 'admin' %}
+            <div class="mt-3 d-flex gap-2 flex-wrap">
+                {% if v['status'] == 'pending' %}
+                <form method="POST" action="{{ url_for('approve_volunteer', uid=v['id']) }}" class="d-inline">
+                    <button class="btn btn-success btn-sm"><i class="bi bi-check2 me-1"></i>Approve</button>
+                </form>
+                <form method="POST" action="{{ url_for('reject_volunteer', uid=v['id']) }}" class="d-inline">
+                    <button class="btn btn-warning btn-sm"><i class="bi bi-x me-1"></i>Reject</button>
+                </form>
+                {% endif %}
+                <a href="{{ url_for('edit_volunteer', uid=v['id']) }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil me-1"></i>Edit</a>
+                <a href="{{ url_for('generate_certificate', uid=v['id']) }}" class="btn btn-outline-success btn-sm"><i class="bi bi-award me-1"></i>Cert</a>
+                <form method="POST" action="{{ url_for('delete_volunteer', uid=v['id']) }}" class="d-inline" onsubmit="return confirm('Delete this volunteer?')">
+                    <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Delete</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-people fs-1 text-muted d-block mb-3"></i>
+    <h5 class="text-muted">No volunteers found</h5>
+    <a href="{{ url_for('volunteers') }}" class="btn btn-outline-success mt-2">Clear filters</a>
+</div>
+{% endif %}
+{% endblock %}

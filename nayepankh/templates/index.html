@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title %}NayePankh - Empowering Communities{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="hero-section text-center py-5">
+    <div class="hero-bg-anim"></div>
+    <div class="container position-relative">
+        <div class="hero-badge mb-3"><i class="bi bi-feather2 me-1"></i> Volunteer · Inspire · Transform</div>
+        <h1 class="hero-title">NayePankh Foundation</h1>
+        <p class="hero-sub">Giving wings to new beginnings. Join thousands of volunteers shaping a better India.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+            {% if not session.get('user_id') %}
+            <a href="{{ url_for('register') }}" class="btn np-btn-primary btn-lg px-5">
+                <i class="bi bi-person-plus me-2"></i>Become a Volunteer
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-success btn-lg px-5">Login</a>
+            {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn np-btn-primary btn-lg px-5">
+                <i class="bi bi-speedometer2 me-2"></i>Go to Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            {% set stats = [
+                ('bi-people-fill','#4CAF50', volunteer_count, 'Active Volunteers'),
+                ('bi-calendar-check-fill','#2196F3', event_count, 'Events Held'),
+                ('bi-heart-fill','#E91E63', donation_total, 'Total Donations (₹)'),
+                ('bi-briefcase-fill','#FF9800', intern_count, 'Interns Trained'),
+            ] %}
+            {% for icon, color, val, label in stats %}
+            <div class="col-6 col-md-3">
+                <div class="stat-card text-center p-4">
+                    <div class="stat-icon mb-3" style="color:{{ color }}">
+                        <i class="bi {{ icon }} fs-1"></i>
+                    </div>
+                    <div class="stat-number counter" data-target="{{ val }}">0</div>
+                    <div class="stat-label">{{ label }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Mission -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
+                <div class="section-eyebrow">Our Mission</div>
+                <h2 class="section-title">Creating Impact, <br><span class="text-success">One Step at a Time</span></h2>
+                <p class="text-muted">NayePankh Foundation bridges passionate volunteers with meaningful causes — education, healthcare, environment, and community development — across India.</p>
+                <div class="row g-3 mt-2">
+                    {% for item in ['Education for All', 'Healthcare Camps', 'Tree Plantation', 'Skill Development'] %}
+                    <div class="col-6">
+                        <div class="mission-chip"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ item }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-3">
+                    {% set causes = [
+                        ('bi-book-fill','Education','#4CAF50','Literacy programs reaching 50,000+ children'),
+                        ('bi-heart-pulse-fill','Healthcare','#E91E63','Free medical camps in rural India'),
+                        ('bi-tree-fill','Environment','#8BC34A','Planted 1M+ trees since 2018'),
+                        ('bi-lightbulb-fill','Skills','#FF9800','Digital literacy for youth'),
+                    ] %}
+                    {% for icon, title, color, desc in causes %}
+                    <div class="col-6">
+                        <div class="cause-card p-3">
+                            <i class="bi {{ icon }} fs-3 mb-2 d-block" style="color:{{ color }}"></i>
+                            <strong>{{ title }}</strong>
+                            <p class="text-muted small mb-0">{{ desc }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Events -->
+{% if events %}
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <div class="section-eyebrow">Events</div>
+            <h2 class="section-title">Upcoming Events</h2>
+        </div>
+        <div class="row g-4">
+            {% for e in events %}
+            <div class="col-md-4">
+                <div class="event-card p-4">
+                    <div class="event-date-badge">{{ e['date'] }}</div>
+                    <h5 class="mt-3">{{ e['title'] }}</h5>
+                    <p class="text-muted small">{{ e['description'][:100] }}{% if e['description']|length > 100 %}...{% endif %}</p>
+                    <div class="d-flex align-items-center gap-2 text-muted small">
+                        <i class="bi bi-geo-alt-fill text-success"></i> {{ e['location'] }}
+                    </div>
+                    {% if session.get('user_id') %}
+                    <a href="{{ url_for('events') }}" class="btn np-btn-primary btn-sm mt-3">Register</a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-success btn-sm mt-3">Login to Register</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% if session.get('user_id') %}{{ url_for('events') }}{% else %}{{ url_for('login') }}{% endif %}" class="btn btn-outline-success">View All Events <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Testimonials -->
+<section class="py-5 testimonials-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-eyebrow">Testimonials</div>
+            <h2 class="section-title">What Our Volunteers Say</h2>
+        </div>
+        <div class="row g-4">
+            {% set testimonials = [
+                ('Priya Sharma','Delhi Volunteer','bi-person-circle','#4CAF50','"NayePankh changed my perspective on giving back. The team is incredibly supportive and the impact is real."'),
+                ('Arjun Mehta','Mumbai Intern','bi-person-circle','#2196F3','"My internship here gave me real-world experience in NGO management. Best decision of my life!"'),
+                ('Kavya Nair','Bangalore Volunteer','bi-person-circle','#E91E63','"The platform is so easy to use. I found events near me and joined within minutes. Highly recommend!"'),
+            ] %}
+            {% for name, role, icon, color, quote in testimonials %}
+            <div class="col-md-4">
+                <div class="testimonial-card p-4">
+                    <div class="quote-mark">"</div>
+                    <p>{{ quote[1:-1] }}</p>
+                    <div class="d-flex align-items-center gap-3 mt-3">
+                        <i class="bi {{ icon }} fs-2" style="color:{{ color }}"></i>
+                        <div>
+                            <strong>{{ name }}</strong>
+                            <div class="text-muted small">{{ role }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5">
+    <div class="container">
+        <div class="cta-card text-center p-5">
+            <h2 class="mb-3">Ready to Make a Difference?</h2>
+            <p class="text-muted mb-4">Join thousands of volunteers and interns transforming communities across India.</p>
+            {% if not session.get('user_id') %}
+            <a href="{{ url_for('register') }}" class="btn np-btn-primary btn-lg px-5 me-3">
+                <i class="bi bi-person-plus me-2"></i>Join Now
+            </a>
+            <a href="{{ url_for('donations') if session.get('user_id') else url_for('login') }}" class="btn btn-outline-success btn-lg px-5">
+                <i class="bi bi-heart me-2"></i>Donate
+            </a>
+            {% else %}
+            <a href="{{ url_for('events') }}" class="btn np-btn-primary btn-lg px-5">
+                <i class="bi bi-calendar-plus me-2"></i>Find Events
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
