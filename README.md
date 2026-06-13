@@ -42,7 +42,7 @@ A modern, full-featured NGO Management System built with Python Flask for managi
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/nayepankh-volunteer-system.git
+git clone https://github.com/ArnaovGarg925/nayepankh-volunteer-system
 cd nayepankh-volunteer-system
 ```
 
